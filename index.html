@@ -38,10 +38,53 @@
     <h2>AI-powered Text-to-Speech Course Summaries </h2>
     <main>
     <!-- OPEN AI CHAT SECTION -->
-    <div class="section" style="width: 20%;">
+    <div id="chat" class="section" style="width: 20%;">
         <h5>Open API AI Chatbot coming soon!</h5>
         <!-- <input type="text" placeholder="Ask me anything about your courses..." /> -->
-        generate podcast script here.
+
+        <form id="chat-form" action="http://httpbin.org/post" method="post">
+            <input id="chatInput" style="width: 120px;" type="text" name="chatInput" placeholder="Ask me about your course!"/> 
+            <button type="submit" class="search-button"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+        <script>
+            let chatForm = document.querySelector("#chat-form")
+            chatForm.addEventListener("submit", () => {
+                event.preventDefault()
+                let chatInput = document.querySelector("#chatInput")
+                let prompt = chatInput.value
+
+                fetch('https://api.openai.com/v1/responses', {
+                    method: 'POST', 
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer OPEN-AI-KEY-HERE',
+                    },
+                    body: JSON.stringify({ 
+                        // data
+                        "model": "gpt-5",
+                        "input": "generate a podcast script teaching" +prompt
+                        // for images:
+                        // "model": "dall-e-3",
+                        // "prompt": "generate an image of" +prompt
+                    })
+                }).then(response => response.json())
+                .then(data => {
+                    let chatDiv = document.querySelector("#chat")
+                    // for images:
+                    // let chatResponse = document.createElement("img")
+                    // chatResponse.src = data.data[0].url
+                    let chatResponse = document.createElement("p")
+                    chatResponse.textContent = data.output[1].content[0].text
+
+                    chatDiv.appendChild(chatResponse)
+                })
+                .catch(error => console.error('Error:', error));
+            })
+            
+
+
+        </script>
+
     </div>
 
     <!-- <div class="card">
