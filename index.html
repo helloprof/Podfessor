@@ -17,90 +17,156 @@
 
 </head>
 
-<body style="background-color: #202020; color: greenyellow; font-family: 'Courier New', Courier, monospace">
+<body>
 
     <nav class="navbar">
         <!-- FROGGY 1: home button/logo -->
-        <a href="/">Home</a> 
+        <a href="/">Home</a>
         <!-- FROGGY 2: search bar -->
-        <div> 
-            <input type="text" placeholder="Search courses..." />
-            <button class="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <div>
+            <form id="search-form">
+                <input id="search-input" type="text" placeholder="Search courses..." />
+                <button class="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+            <script>
+                let searchForm = document.querySelector("#search-form")
+                searchForm.addEventListener("submit", () => {
+                    event.preventDefault()
+                    let searchInput = searchForm.querySelector("#search-input")
+                    let query = searchInput.value.toLowerCase()
+                    // console.log("Searching for:", query)
+
+                    // let courseCards = document.querySelectorAll(".course-card")
+                    let newCourseCard = document.createElement("div")
+                    newCourseCard.classList.add("card")
+                    // newCourseCard.innerHTML = `<h3>Search Results for "${query}"</h3>`
+
+
+                    // // img
+                    // let newCardImg = document.createElement("img")
+                    // newCardImg.src = course.image
+
+                    // // h4 title
+                    let newCardTitle = document.createElement("h4")
+                    newCardTitle.textContent = query
+
+                    // // button
+                    // let newCardButton = document.createElement("button")
+                    // // newCardButton.onclick = () => {
+                    // //     open(course.outlineURL, "_blank", "noopener,noreferrer")
+                    // // }
+                    // newCardButton.className = "button"
+                    // newCardButton.textContent = course.code  
+
+                    // // text / paragraph
+                    // let newCardP = document.createElement("p")
+                    // newCardP.textContent = course.topics.join(", ")
+
+                    // // append children to card
+                    // newCard.appendChild(newCardImg)
+                    // newCard.appendChild(newCardTitle)
+                    // newCard.appendChild(newCardButton)
+                    // newCard.appendChild(newCardP)
+
+                    newCourseCard.appendChild(newCardTitle)
+
+
+
+                    let cardsContainer = document.querySelector("#cardsContainer")
+                    // cardsContainer.innerHTML = "" // Clear previous results
+                    cardsContainer.appendChild(newCourseCard)
+                })
+            </script>
+
         </div>
         <!-- FROGGY 3: login/menu -->
         <div class="login-menu">
             <a href="/about">About Us</a>
             <a href="/signup">Sign Up</a>
-            <button class="login-button">LOGIN <i class="fa-solid fa-user"></i></button>
+            <a href="/login"> <button class="login-button">LOGIN <i class="fa-solid fa-user"></i></button></a>
         </div>
     </nav>
     <h1 style="font-family: Press Start 2P;">PodFessor App</h1>
     <h2>AI-powered Text-to-Speech Course Summaries </h2>
     <main>
-    <!-- OPEN AI CHAT SECTION -->
-    <div id="chat" class="section" style="width: 20%;">
-        <h5>Open API AI Chatbot coming soon!</h5>
-        <!-- <input type="text" placeholder="Ask me anything about your courses..." /> -->
+        <!-- OPEN AI CHAT SECTION -->
+        <div id="chat" class="section" style="width: 20%;">
+            <h5>Open API AI Chatbot coming soon!</h5>
+            <!-- <input type="text" placeholder="Ask me anything about your courses..." /> -->
 
-        <form id="chat-form" action="http://httpbin.org/post" method="post">
-            <input id="chatInput" style="width: 120px;" type="text" name="chatInput" placeholder="Ask me about your course!"/> 
-            <button type="submit" class="search-button"><i class="fa-solid fa-paper-plane"></i></button>
-        </form>
-        <script>
-            let chatForm = document.querySelector("#chat-form")
-            chatForm.addEventListener("submit", () => {
-                event.preventDefault()
-                let chatInput = document.querySelector("#chatInput")
-                let prompt = chatInput.value
+            <form id="chat-form" action="http://httpbin.org/post" method="post">
+                <input id="chatInput" style="width: 120px;" type="text" name="chatInput"
+                    placeholder="Ask me about your course!" />
+                <button type="submit" class="search-button"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+            <script>
+                let chatForm = document.querySelector("#chat-form")
+                chatForm.addEventListener("submit", () => {
+                    event.preventDefault()
+                    let chatInput = document.querySelector("#chatInput")
+                    let prompt = chatInput.value
 
-                fetch('https://api.openai.com/v1/responses', {
-                    method: 'POST', 
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer OPEN-AI-KEY-HERE',
-                    },
-                    body: JSON.stringify({ 
-                        // data
-                        "model": "gpt-5",
-                        "input": "generate a podcast script teaching" +prompt
-                        // for images:
-                        // "model": "dall-e-3",
-                        // "prompt": "generate an image of" +prompt
-                    })
-                }).then(response => response.json())
-                .then(data => {
-                    let chatDiv = document.querySelector("#chat")
-                    // for images:
-                    // let chatResponse = document.createElement("img")
-                    // chatResponse.src = data.data[0].url
-                    let chatResponse = document.createElement("p")
-                    chatResponse.textContent = data.output[1].content[0].text
+                    // write this as a function to be called by the card buttons  later
 
-                    chatDiv.appendChild(chatResponse)
+                    fetch('https://api.openai.com/v1/responses', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer OPENAI_API_KEY',
+                            
+                        },
+                        body: JSON.stringify({
+                            // data
+                            "model": "gpt-5",
+                            "input": "generate a podcast script teaching" + prompt
+                            // for images:
+                            // "model": "dall-e-3",
+                            // "prompt": "generate an image of" +prompt
+                        })
+                    }).then(response => response.json())
+                        .then(data => {
+                            let chatDiv = document.querySelector("#chat")
+                            // for images:
+                            // let chatResponse = document.createElement("img")
+                            // chatResponse.src = data.data[0].url
+                            let chatResponse = document.createElement("p")
+                            chatResponse.textContent = data.output[1].content[0].text
+
+                            chatDiv.appendChild(chatResponse)
+
+                            // now do text to speech
+                            // fetch()
+                        })
+                        .catch(error => {
+
+                            // alert
+                            alert("SUBMISSION ERROR: " + error.message)
+                        });
                 })
-                .catch(error => console.error('Error:', error));
-            })
-            
 
 
-        </script>
 
-    </div>
+            </script>
 
-    <!-- <div class="card">
+        </div>
+
+        <!-- <div class="card">
         <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/1IHqQ0mqdfKUDigOF2Xegj?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 
     </div> -->
-    <!-- <button id="generateButton">GENERATE COURSE CARDS <i class="fa-solid fa-book-open"></i></button> -->
+        <!-- <button id="generateButton">GENERATE COURSE CARDS <i class="fa-solid fa-book-open"></i></button> -->
 
-    <!-- CARDS SECTION -->
-    <div class="section" style="width: 80%;">
-    <div id="semesterContainer"></div>
-    <div id="cardsContainer"></div>
-    </div>
+        <!-- CARDS SECTION -->
+        <div class="section" style="width: 80%;">
+            <div id="semesterContainer"></div>
+            <div id="cardsContainer"></div>
+        </div>
 
     </main>
-
+    <form id="subscribe" action="http://httpbin.org/post" method="post">
+        <input name="email" type="email" placeholder="subscribe here!" />
+        <button type="submit" class="search-button"><i class="fa-solid fa-paper-plane"></i></button>
+    </form>
 </body>
 
 <script src="/js/courses.js"></script>

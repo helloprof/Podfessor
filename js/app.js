@@ -20,6 +20,60 @@ let generateSemesterButtons = (semesters) => {
         })
         semesterContainer.appendChild(semesterButton)
     })
+
+    let newCourseCardForm = document.createElement("form")
+    newCourseCardForm.id = "newCourseCardForm"
+    // newCourseCardForm.action = "http://httpbin.org/post"
+    // newCourseCardForm.method = "POST"
+    
+    let courseNameInput = document.createElement("input")
+    courseNameInput.type = "text"
+    courseNameInput.placeholder = "Course Name"
+    courseNameInput.id = "courseNameInput"
+    courseNameInput.name = "courseName"
+
+    let courseCodeInput = document.createElement("input")
+    courseCodeInput.type = "text"
+    courseCodeInput.placeholder = "Course Code"
+    courseCodeInput.id = "courseCodeInput"
+    courseCodeInput.name = "courseCode"
+
+    let courseImageInput = document.createElement("input")
+    courseImageInput.type = "text"
+    courseImageInput.placeholder = "Course Image URL"
+    courseImageInput.id = "courseImageInput"
+    courseImageInput.name = "courseImage"
+
+    let courseTopicsInput = document.createElement("input")
+    courseTopicsInput.type = "text"
+    courseTopicsInput.placeholder = "Course Topics (comma separated)"
+    courseTopicsInput.id = "courseTopicsInput"
+    courseTopicsInput.name = "courseTopics"
+
+    let addCourseButton = document.createElement("button")
+    addCourseButton.type = "submit"
+    addCourseButton.textContent = "Add Course"
+    addCourseButton.className = "button"
+
+    newCourseCardForm.appendChild(courseNameInput)
+    newCourseCardForm.appendChild(courseCodeInput)
+    newCourseCardForm.appendChild(courseImageInput)
+    newCourseCardForm.appendChild(courseTopicsInput)
+    newCourseCardForm.appendChild(addCourseButton)
+
+    newCourseCardForm.addEventListener("submit", (event) => {
+        event.preventDefault()
+        let newCourse = {
+            name: courseNameInput.value,
+            code: courseCodeInput.value,
+            image: courseImageInput.value,
+            topics: courseTopicsInput.value.split(",").map(topic => topic.trim()),
+        }
+        console.log("New Course to add:", newCourse)
+        generateCourseCards([newCourse])
+    })
+    
+    semesterContainer.appendChild(newCourseCardForm)
 }
 
 

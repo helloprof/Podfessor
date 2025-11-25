@@ -4,7 +4,10 @@ p {
 
 body {
     background-color: #000000;
-    color: white;
+    /* color: white; */
+
+    color: greenyellow; 
+    font-family: 'Courier New', Courier, monospace;
 }
 
 a {
@@ -16,7 +19,14 @@ a:visited {
 }
 
 h1 {
-    font-family: 'Press Start 2P'
+    font-family: 'Press Start 2P';
+    padding: 10px;
+    margin: 10px;
+}
+
+h2 {
+    padding: 10px;
+    margin: 10px;
 }
 
 .card {
@@ -70,6 +80,10 @@ img {
     padding: 10px;
     display: flex;
     justify-content: space-between;
+    background-color: #202020;
+    border-radius: 10px;
+    /* border: solid 1px white; */
+
 }
 
 input {
@@ -135,4 +149,31 @@ input:focus {
 main {
     display: flex;
     /* flex-direction: column; */
+    justify-content: space-evenly;
+    /* background-color: #202020;
+    border-radius: 10px; */
+}
+
+#subscribe {
+    margin: 0 auto;
+    position: fixed;
+    bottom: 10px;
+    /* right: 10px; */
+    /* align-items: ; */
+
+}
+
+#newCourseCardForm {
+    display: flex;
+    /* flex-direction: column; */
+    padding: 10px;
+}
+
+#newCourseCardForm input {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    border: solid 1px grey;
+    background-color: black;
+    color: white;
 }
