@@ -91,7 +91,8 @@
     <main>
         <!-- OPEN AI CHAT SECTION -->
         <div id="chat" class="section" style="width: 20%;">
-            <h5>Open API AI Chatbot coming soon!</h5>
+            <h5>Create Podcast Script Here!</h5>
+            <div style="display: none;" class="loader"></div>
             <!-- <input type="text" placeholder="Ask me anything about your courses..." /> -->
 
             <form id="chat-form" action="http://httpbin.org/post" method="post">
@@ -99,6 +100,7 @@
                     placeholder="Ask me about your course!" />
                 <button type="submit" class="search-button"><i class="fa-solid fa-paper-plane"></i></button>
             </form>
+            <audio style="filter: blur(1px);" id="player" controls></audio>
             <script>
                 let chatForm = document.querySelector("#chat-form")
                 chatForm.addEventListener("submit", () => {
@@ -106,36 +108,90 @@
                     let chatInput = document.querySelector("#chatInput")
                     let prompt = chatInput.value
 
+                    let loader = document.querySelector(".loader")
+                    loader.style.display = "block"
+                    let chatblur = document.querySelector("#chat-form")
+                    chatblur.style.filter = "blur(2px)"
+                    chatInput.disabled = true
+                    let searchButton = chatForm.querySelector(".search-button")
+                    searchButton.disabled = true
+
+
                     // write this as a function to be called by the card buttons  later
 
                     fetch('https://api.openai.com/v1/responses', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer OPENAI_API_KEY',
+                            'Authorization': 'Bearer OPEN-AI-TOKEN-HERE',
                             
                         },
                         body: JSON.stringify({
                             // data
                             "model": "gpt-5",
-                            "input": "generate a podcast script teaching" + prompt
+                            "input": "generate a podcast script and make sure it is short and sweet, fun and not too much info the key is to be more of a show (only one person speaking, no need to put their names as this output will be passed to a text to speech model, keep it under 500 tokens or a few short paragraphs), they will be teaching" + prompt
                             // for images:
                             // "model": "dall-e-3",
                             // "prompt": "generate an image of" +prompt
                         })
                     }).then(response => response.json())
                         .then(data => {
+                            let output = data.output[1].content[0].text
+                            console.log("OUTPUT:", output)
+
                             let chatDiv = document.querySelector("#chat")
+
+
                             // for images:
                             // let chatResponse = document.createElement("img")
                             // chatResponse.src = data.data[0].url
-                            let chatResponse = document.createElement("p")
-                            chatResponse.textContent = data.output[1].content[0].text
 
-                            chatDiv.appendChild(chatResponse)
+                            // for displaying the output text:
+                            // let chatResponse = document.createElement("p")
+                            // chatResponse.textContent = output
+
+                            // chatDiv.appendChild(chatResponse)
 
                             // now do text to speech
                             // fetch()
+                            fetch('https://api.openai.com/v1/audio/speech', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer OPEN-AI-TOKEN-HERE',
+                                    
+                                },
+                                body: JSON.stringify({
+                                    // data
+                                    "model": "gpt-4o-mini-tts",
+                                    "input": output,
+                                    "voice": "coral",
+                                    "instructions": "Speak in a podcast voice.",
+
+                                    // for images:
+                                    // "model": "dall-e-3",
+                                    // "prompt": "generate an image of" +prompt
+                                })
+                            }).then(response => response.blob())
+                            .then((audioBlob) => {
+                                loader.style.display = "none"
+                                chatblur.style.filter = "blur(0px)"
+                                chatblur.style.transition = "filter 0.3s ease-in-out"
+                                chatInput.disabled = false
+                                searchButton.disabled = false
+                                // console.log(data)
+
+                                const audioUrl = URL.createObjectURL(audioBlob); // <-- browser-safe URL
+
+                                // You can now use it for an <audio> tag:
+                                const audioElement = document.getElementById("player");
+                                audioElement.src = audioUrl;
+
+                                console.log("Audio URL:", audioUrl); // in case you want to inspect it
+                                audioElement.style.filter = "blur(0px)"
+                                audioElement.style.transition = "filter 0.3s ease-in-out"
+                            })
+                            
                         })
                         .catch(error => {
 
